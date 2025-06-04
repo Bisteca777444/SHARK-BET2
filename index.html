@@ -1,55 +1,150 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SHARKBET SLOTS</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+<meta charset="UTF-8" />
+<title>Login / Cadastro Minimalista</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  button {
+    margin-right: 10px;
+    padding: 10px 20px;
+  }
+  /* Modal */
+  #modal {
+    display: none;
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.5);
+    align-items: center;
+    justify-content: center;
+  }
+  #modal.active {
+    display: flex;
+  }
+  #modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+  #modal-content input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+  #modal-content button {
+    width: 100%;
+    padding: 10px;
+  }
+  #message {
+    color: red;
+    margin-top: 10px;
+  }
+</style>
 </head>
 <body>
-  <div id="login-form" style="display:none;">
-  <input id="email" type="email" placeholder="Email" />
-  <input id="senha" type="password" placeholder="Senha" />
-  <button id="btn-cadastrar">Cadastrar</button>
-  <button id="btn-entrar">Entrar</button>
+
+<button id="btn-login">Login</button>
+<button id="btn-register">Cadastro</button>
+
+<div id="modal">
+  <div id="modal-content">
+    <h3 id="modal-title">Login</h3>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Senha" />
+    <button id="submit-btn">Entrar</button>
+    <p id="message"></p>
+    <button id="close-btn" style="margin-top:10px;">Fechar</button>
+  </div>
 </div>
 
-  <header>
-    <div class="logo">SHARKBET</div>
-    <nav>
-      <button id="btn-login">Login / Cadastro</button>
-      <button id="btn-logout" style="display:none;">Sair</button>
-    </nav>
-  </header>
+<div id="lobby" style="display:none;">
+  <h2>Lobby da Plataforma</h2>
+  <p>Bem-vindo, <span id="user-email"></span>!</p>
+</div>
 
-  <main>
-    <section class="hero">
-      <h1>Bem-vindo ao SHARKBET</h1>
-      <p>O melhor cassino online para você apostar com segurança e diversão.</p>
-      <button id="btn-jogar" style="display:none;">Jogar Agora</button>
-    </section>
+<script>
+  const modal = document.getElementById('modal');
+  const modalTitle = document.getElementById('modal-title');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const submitBtn = document.getElementById('submit-btn');
+  const messageP = document.getElementById('message');
+  const closeBtn = document.getElementById('close-btn');
+  const lobby = document.getElementById('lobby');
+  const userEmailSpan = document.getElementById('user-email');
 
-    <section id="area-apostas" style="display:none;">
-      <h2>Faça sua aposta</h2>
-      <input id="input-nome" placeholder="Seu nome" />
-      <input id="input-valor" type="number" placeholder="Valor da aposta (R$)" />
-      <button id="btn-apostar">Apostar</button>
+  let mode = 'login'; // 'login' ou 'register'
 
-      <h3>Apostas recentes</h3>
-      <ul id="lista-apostas"></ul>
-    </section>
+  document.getElementById('btn-login').onclick = () => openModal('login');
+  document.getElementById('btn-register').onclick = () => openModal('register');
+  closeBtn.onclick = closeModal;
 
-    <section id="jogo-responsavel">
-      <p><strong>Jogo Responsável:</strong> Aposte com consciência e controle seus limites.</p>
-    </section>
-  </main>
+  function openModal(m) {
+    mode = m;
+    modalTitle.textContent = mode === 'login' ? 'Login' : 'Cadastro';
+    submitBtn.textContent = mode === 'login' ? 'Entrar' : 'Cadastrar';
+    messageP.textContent = '';
+    emailInput.value = '';
+    passwordInput.value = '';
+    modal.classList.add('active');
+  }
 
-  <footer>
-    <p>© 2025 SHARKBET. Todos os direitos reservados.</p>
-  </footer>
+  function closeModal() {
+    modal.classList.remove('active');
+  }
 
-  <script src="auth.js"></script>
+  submitBtn.onclick = async () => {
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    if (!email || !password) {
+      messageP.textContent = 'Preencha email e senha.';
+      return;
+    }
+
+    const url = mode === 'login' ? 'http://localhost:3000/api/login' : 'http://localhost:3000/api/register';
+
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        if (mode === 'login') {
+          closeModal();
+          showLobby(email);
+        } else {
+          messageP.style.color = 'green';
+          messageP.textContent = 'Cadastro realizado com sucesso! Agora faça login.';
+          mode = 'login';
+          modalTitle.textContent = 'Login';
+          submitBtn.textContent = 'Entrar';
+          emailInput.value = '';
+          passwordInput.value = '';
+        }
+      } else {
+        messageP.style.color = 'red';
+        messageP.textContent = data.message || 'Erro desconhecido.';
+      }
+    } catch (e) {
+      messageP.style.color = 'red';
+      messageP.textContent = 'Erro na comunicação com o servidor.';
+    }
+  };
+
+  function showLobby(email) {
+    userEmailSpan.textContent = email;
+    lobby.style.display = 'block';
+    document.body.querySelectorAll('button').forEach(b => b.style.display = 'none');
+  }
+</script>
+
 </body>
 </html>
