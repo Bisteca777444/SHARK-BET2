@@ -1,6 +1,6 @@
 // Inicializa o Supabase com seus dados
-const supabaseUrl = 'https://SEU-PROJETO.supabase.co'; // substitua aqui
-const supabaseKey = 'CHAVE-ANON'; // substitua aqui
+const supabaseUrl = 'https://qvxskjtzqjnxipxszrjz.supabase.co'; // substitua aqui
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2eHNranR6cWpueGlweHN6cmp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwNjQzNDAsImV4cCI6MjA2NDY0MDM0MH0.6PB484Bg9TL4As7vLX5iB3mFdO94RlU3zSAOVeLaRww'; // substitua aqui
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 // Exibe ou esconde o formulário de login/cadastro
