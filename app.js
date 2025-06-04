@@ -1,100 +1,86 @@
-// Substitua pelos seus dados do Supabase:
-const SUPABASE_URL = 'https://qvxskjtzqjnxipxszrjz.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2eHNranR6cWpueGlweHN6cmp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwNjQzNDAsImV4cCI6MjA2NDY0MDM0MH0.6PB484Bg9TL4As7vLX5iB3mFdO94RlU3zSAOVeLaRww';
+import React, { useState } from 'react';
 
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+function App() {
+  const [showModal, setShowModal] = useState(false);
+  const [mode, setMode] = useState('login'); // 'login' ou 'register'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false);
 
-// Inicializa Netlify Identity
-netlifyIdentity.init();
+  const openModal = (mode) => {
+    setMode(mode);
+    setShowModal(true);
+    setEmail('');
+    setPassword('');
+    setMessage('');
+  };
 
-// Elementos
-const btnLogin = document.getElementById('btn-login');
-const btnLogout = document.getElementById('btn-logout');
-const btnJogar = document.getElementById('btn-jogar');
-const areaApostas = document.getElementById('area-apostas');
-const btnApostar = document.getElementById('btn-apostar');
-const listaApostas = document.getElementById('lista-apostas');
+  const handleSubmit = async () => {
+    const url = mode === 'login' ? 'http://localhost:3000/api/login' : 'http://localhost:3000/api/register';
 
-function atualizarInterface() {
-  const user = netlifyIdentity.currentUser();
-  if (user) {
-    btnLogin.style.display = 'none';
-    btnLogout.style.display = 'inline-block';
-    btnJogar.style.display = 'inline-block';
-    areaApostas.style.display = 'block';
-    carregarApostas();
-  } else {
-    btnLogin.style.display = 'inline-block';
-    btnLogout.style.display = 'none';
-    btnJogar.style.display = 'none';
-    areaApostas.style.display = 'none';
-    listaApostas.innerHTML = '';
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if(data.success){
+        if(mode === 'login'){
+          setLoggedIn(true);
+          setMessage('Login efetuado com sucesso! Entrando no lobby...');
+          setShowModal(false);
+        } else {
+          setMessage('Cadastro realizado com sucesso! Agora faça login.');
+          setMode('login');
+        }
+      } else {
+        setMessage(data.message || 'Erro');
+      }
+    } catch(e) {
+      setMessage('Erro na comunicação com o servidor.');
+    }
+  };
+
+  if(loggedIn){
+    return <div><h2>Lobby da Plataforma</h2><p>Bem-vindo, {email}!</p></div>;
   }
+
+  return (
+    <div style={{ padding: 20 }}>
+      <button onClick={() => openModal('login')}>Login</button>
+      <button onClick={() => openModal('register')} style={{ marginLeft: 10 }}>Cadastro</button>
+
+      {showModal && (
+        <div style={{
+          position: 'fixed', top: 0, left:0, right:0, bottom:0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+        }}>
+          <div style={{
+            background: 'white', padding: 20, borderRadius: 8,
+            width: 300, boxShadow: '0 0 10px rgba(0,0,0,0.3)'
+          }}>
+            <h3>{mode === 'login' ? 'Login' : 'Cadastro'}</h3>
+            <input
+              type="email" placeholder="Email" value={email}
+              onChange={e => setEmail(e.target.value)} style={{width: '100%', marginBottom: 10}}
+            />
+            <input
+              type="password" placeholder="Senha" value={password}
+              onChange={e => setPassword(e.target.value)} style={{width: '100%', marginBottom: 10}}
+            />
+            <button onClick={handleSubmit} style={{width: '100%'}}>
+              {mode === 'login' ? 'Entrar' : 'Cadastrar'}
+            </button>
+            <p style={{color: 'red', marginTop: 10}}>{message}</p>
+            <button onClick={() => setShowModal(false)} style={{marginTop: 10}}>Fechar</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
-btnLogin.addEventListener('click', () => {
-  netlifyIdentity.open();
-});
-
-btnLogout.addEventListener('click', () => {
-  netlifyIdentity.logout();
-});
-
-netlifyIdentity.on('login', user => {
-  atualizarInterface();
-  netlifyIdentity.close();
-});
-
-netlifyIdentity.on('logout', () => {
-  atualizarInterface();
-});
-
-btnApostar.addEventListener('click', async () => {
-  const user = netlifyIdentity.currentUser();
-  if (!user) {
-    alert('Faça login para apostar.');
-    return;
-  }
-
-  const nome = document.getElementById('input-nome').value.trim();
-  const aposta = parseFloat(document.getElementById('input-valor').value);
-
-  if (!nome || isNaN(aposta) || aposta <= 0) {
-    alert('Preencha o nome e valor da aposta corretamente.');
-    return;
-  }
-
-  const { data, error } = await supabase
-    .from('apostas')
-    .insert([{ email: user.email, nome, valor: aposta }]);
-
-  if (error) {
-    alert('Erro ao salvar aposta: ' + error.message);
-  } else {
-    alert('Aposta registrada com sucesso!');
-    document.getElementById('input-nome').value = '';
-    document.getElementById('input-valor').value = '';
-    carregarApostas();
-  }
-});
-
-async function carregarApostas() {
-  const { data, error } = await supabase
-    .from('apostas')
-    .select('*')
-    .order('id', { ascending: false });
-
-  if (error) {
-    alert('Erro ao carregar apostas: ' + error.message);
-    return;
-  }
-
-  listaApostas.innerHTML = '';
-  data.forEach(aposta => {
-    const li = document.createElement('li');
-    li.textContent = `${aposta.nome} apostou R$ ${aposta.valor.toFixed(2)}`;
-    listaApostas.appendChild(li);
-  });
-}
-
-window.onload = atualizarInterface;
+export default App;
