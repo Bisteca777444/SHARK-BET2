@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SHARKBET - Cassino Online</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+</head>
+<body>
+  <header>
+    <div class="logo">SHARKBET</div>
+    <nav>
+      <button id="btn-login">Login / Cadastro</button>
+      <button id="btn-logout" style="display:none;">Sair</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Bem-vindo ao SHARKBET</h1>
+      <p>O melhor cassino online para você apostar com segurança e diversão.</p>
+      <button id="btn-jogar" style="display:none;">Jogar Agora</button>
+    </section>
+
+    <section id="area-apostas" style="display:none;">
+      <h2>Faça sua aposta</h2>
+      <input id="input-nome" placeholder="Seu nome" />
+      <input id="input-valor" type="number" placeholder="Valor da aposta (R$)" />
+      <button id="btn-apostar">Apostar</button>
+
+      <h3>Apostas recentes</h3>
+      <ul id="lista-apostas"></ul>
+    </section>
+
+    <section id="jogo-responsavel">
+      <p><strong>Jogo Responsável:</strong> Aposte com consciência e controle seus limites.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 SHARKBET. Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

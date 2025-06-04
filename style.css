@@ -1,0 +1,153 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #0b1923, #1c3a57);
+  color: #eee;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  width: 100%;
+  background-color: #021820;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 15px #0b4a81;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #00c8ff;
+  letter-spacing: 3px;
+  font-family: 'Arial Black', Arial, sans-serif;
+}
+
+nav button {
+  background-color: #00c8ff;
+  color: #021820;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  margin-left: 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+nav button:hover {
+  background-color: #008fcc;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  color: #aaccee;
+}
+
+#btn-jogar {
+  background-color: #00c8ff;
+  color: #021820;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 30px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+#btn-jogar:hover {
+  background-color: #008fcc;
+}
+
+#area-apostas {
+  margin-top: 2rem;
+  background-color: #021820cc;
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 0 20px #00c8ff88;
+}
+
+#area-apostas h2 {
+  margin-bottom: 1rem;
+  color: #00c8ff;
+}
+
+#area-apostas input {
+  width: 90%;
+  margin: 0.6rem auto;
+  padding: 0.7rem 1rem;
+  border-radius: 15px;
+  border: none;
+  font-size: 1rem;
+  display: block;
+}
+
+#btn-apostar {
+  margin-top: 1rem;
+  background-color: #00c8ff;
+  color: #021820;
+  border: none;
+  padding: 0.8rem 2rem;
+  border-radius: 30px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#btn-apostar:hover {
+  background-color: #008fcc;
+}
+
+#lista-apostas {
+  margin-top: 1.2rem;
+  list-style: none;
+  max-height: 150px;
+  overflow-y: auto;
+  text-align: left;
+  padding-left: 1rem;
+}
+
+#lista-apostas li {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #004466;
+}
+
+#jogo-responsavel {
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: #77aadd;
+}
+
+footer {
+  width: 100%;
+  padding: 1rem 0;
+  background-color: #021820;
+  color: #00c8ff;
+  font-size: 0.8rem;
+  text-align: center;
+}
