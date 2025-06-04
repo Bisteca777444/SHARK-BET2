@@ -1,6 +1,6 @@
 // Substitua pelos seus dados do Supabase:
-const SUPABASE_URL = 'https://SEU_PROJETO.supabase.co';
-const SUPABASE_KEY = 'SUA_API_KEY';
+const SUPABASE_URL = 'https://qvxskjtzqjnxipxszrjz.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2eHNranR6cWpueGlweHN6cmp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkwNjQzNDAsImV4cCI6MjA2NDY0MDM0MH0.6PB484Bg9TL4As7vLX5iB3mFdO94RlU3zSAOVeLaRww';
 
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
